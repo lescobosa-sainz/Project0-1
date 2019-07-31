@@ -6,4 +6,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: 'week3/cards-api'
+  base-directory: 'reim-api'
