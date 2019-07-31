@@ -1,0 +1,28 @@
+#reim-table-container {
+    width: 100%;
+    padding: 2em;
+}
+
+body {
+    background-color: #212529;
+    color: aliceblue;
+}
+
+#new-reim-form {
+    width: 100%;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.centered {
+    justify-content: center;
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Reimbrsement Collection</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- my css -->
+    <link rel='stylesheet' type='text/css' media='screen' href='reim-table.css'>
+</head>
+
+<body>
+    <nav id="app-nav"></nav>
+
+    <div id="reim-table-container">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Date Submited</th>
+                    <th scope="col">Date Resolved</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Resolver</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Type</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- <form id="new-card-form" onsubmit="submitNewCard(event)">
+        <div class="flex-row">
+            <div class="form-group">
+                <label for="card-name-input">Card Name</label>
+                <input type="text" class="form-control" id="card-name-input" placeholder="Island">
+            </div>
+
+            <div class="form-group">
+                <label for="card-value-input">Value</label>
+                <input type="number" class="form-control" id="card-value-input">
+            </div>
+
+            <div class="btn-group">
+                <button id="condition-dropdown" type="button" class="btn btn-primary dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Condition
+                </button>
+                <div class="dropdown-menu" onclick="updateCondition(event)">
+                    <a class="dropdown-item">Mint</a>
+                    <a class="dropdown-item">Near Mint</a>
+                    <a class="dropdown-item">Okay</a>
+                    <a class="dropdown-item">Bad</a>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="game-dropdown" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Game
+                </button>
+                <div class="dropdown-menu" onclick="updateGameDropdown(event)">
+                    <a class="dropdown-item">MTG</a>
+                    <a class="dropdown-item">Pokemon</a>
+                    <a class="dropdown-item">Poker</a>
+                    <a class="dropdown-item">Yugioh</a>
+                </div>
+            </div>
+        </div>
+        <div class="flex-row">
+            <button class="btn btn-success" type="submit" style="align-self: center">Submit</button>
+            <button class="btn btn-success" style="align-self: center" onclick="safeSubmitNewCard(event)">Safe
+                Submit</button>
+        </div>
+
+    </form> -->
+
+</body>
+<!-- often people put js at bottom so html can load first -->
+<!-- Bootstrap js files -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+<script src="./nav-component/nav.js"></script>
+<script src="reim-table.js"></script>
+
+</html>
