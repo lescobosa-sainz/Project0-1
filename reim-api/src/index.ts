@@ -4,6 +4,7 @@ import { usersRouter } from './routers/users.router';
 import { sessionMiddleware } from './middleware/session.middleware';
 import { authRouter } from './routers/auth.router';
 import { reimRouter } from './routers/reim.router';
+import { statusRouter } from './routers/status.router';
 
 // specify the port will run on
 const port = process.env.PORT || 8012;
@@ -43,6 +44,7 @@ app.use(sessionMiddleware);
  ******************************************/
 app.use('/users', usersRouter);
 app.use('/reim', reimRouter);
+app.use('/status', statusRouter);
 app.use(authRouter);
 
 app.listen(port, () => {

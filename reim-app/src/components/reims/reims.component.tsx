@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Reim from '../../models/reim';
 import Status from '../../models/status';
+import { environment } from '../../environment';
 
 interface IState {
     reims: Reim[],
@@ -31,7 +32,7 @@ export default class Reims extends Component<{}, IState> {
     }
 
     getreims = async () => {
-        const resp = await fetch('http://localhost:8012/reims', {
+        const resp = await fetch(environment.context + '/reim', {
             credentials: 'include'
         });
         const reimsFromServer = await resp.json();
@@ -45,8 +46,8 @@ export default class Reims extends Component<{}, IState> {
         console.log(reimsFromServer);
     }
 
-    getreimsBystatusId = async (status: Status) => {
-        const resp = await fetch('http://localhost:8012/reims/status/' + status.statusId, {
+    getreimsByStatusId = async (status: Status) => {
+        const resp = await fetch(environment.context + '/reim/status/' + status.statusId, {
             credentials: 'include'
         });
         const reimsFromServer = await resp.json();
@@ -61,7 +62,7 @@ export default class Reims extends Component<{}, IState> {
     }
 
     getstatuss = async () => {
-        const resp = await fetch('http://localhost:8012/status', {
+        const resp = await fetch(environment.context + '/status', {
             credentials: 'include'
         });
         const status = await resp.json();
@@ -96,7 +97,7 @@ export default class Reims extends Component<{}, IState> {
                         {
                             this.state.status.map(status => (
                                 <DropdownItem key={'status-dropdown-' + status.statusId}
-                                    onClick={() => this.getreimsBystatusId(status)}>
+                                    onClick={() => this.getreimsByStatusId(status)}>
                                     {status.status}
                                 </DropdownItem>
                             ))
@@ -121,15 +122,15 @@ export default class Reims extends Component<{}, IState> {
                         {
                             reims.map(reim =>
                                 <tr key={'reimId-' + reim.reimId}>
-                                    <td>${reim.reimId}</td>
-                                    <td>${reim.author}</td>
-                                    <td>${reim.amount}</td>
-                                    <td>${reim.dateSubmitted}</td>
-                                    <td>${reim.dateResolved}</td>
-                                    <td>${reim.description}</td>
-                                    <td>${reim.resolver}</td>
-                                    <td>${reim.status}</td>
-                                    <td>${reim.type}</td>
+                                    <td>{reim.reimId}</td>
+                                    <td>{reim.author}</td>
+                                    <td>{reim.amount}</td>
+                                    <td>{reim.dateSubmitted}</td>
+                                    <td>{reim.dateResolved}</td>
+                                    <td>{reim.description}</td>
+                                    <td>{reim.resolver}</td>
+                                    <td>{reim.status}</td>
+                                    <td>{reim.type}</td>
                                 </tr>)
                         }
                     </tbody>

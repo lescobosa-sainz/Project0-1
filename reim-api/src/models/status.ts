@@ -1,6 +1,6 @@
-export default class status {
+export default class Status {
     constructor(
-        statusId: number, // primary key
-        status: string, // not null, unique
+        public statusId: 0, // primary key
+        public status: '', // not null, unique
     ) { }
 }

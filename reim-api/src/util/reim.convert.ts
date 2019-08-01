@@ -5,7 +5,7 @@ import Reim from '../models/reim';
 
 export function convertSqlReim(row) {
  console.log('convert');
-  return new Reim(row.reimbursement_id, row.username , row.amount, row.date_submited, row.date_resolved, row.description, row.r_username, row.status, row.type);
+  return new Reim(row.reimbursement_id, row.username , row.amount, row.date_submited, row.date_resolved, row.description, row.r_username, row.status_name, row.type);
 }
 
 
