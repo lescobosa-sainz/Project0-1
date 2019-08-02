@@ -5,7 +5,7 @@ phases:
       nodejs: 10
   pre_build:
     commands: 
-      - cd reim-app-redux/buildspec.yml
+      - cd reim-app-redux
       - npm install
   build:
     commands:
@@ -13,4 +13,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: 'reim-app-redux/buildspec.yml'
+  base-directory: 'reim-app-redux'
