@@ -5,7 +5,6 @@ import User from '../../models/user';
 import { IState } from '../../reducers';
 import { connect } from 'react-redux';
 import Reim from '../../models/reim';
-import Status from '../../models/status';
 
 interface IProps {
     currentUser?: User
@@ -13,20 +12,20 @@ interface IProps {
 
 interface IComponentState {
     reims: Reim[],
-    status: Status[],
-    statusDropdown: {
+    users: User[],
+    usersDropdown: {
         isOpen: boolean,
         selection: string
     }
 }
 
-export class Reims extends Component<IProps, IComponentState> {
+export class ReimsByCurentUser extends Component<IProps, IComponentState> {
     constructor(props: any) {
         super(props);
         this.state = {
             reims: [],
-            status: [],
-            statusDropdown: {
+            users: [],
+            usersDropdown: {
                 isOpen: false,
                 selection: 'All'
             }
@@ -35,7 +34,7 @@ export class Reims extends Component<IProps, IComponentState> {
 
     async componentDidMount() {
         this.getReims();
-        this.getStatus();
+        this.getUsers();
     }
 
     getReims = async () => {
@@ -45,45 +44,45 @@ export class Reims extends Component<IProps, IComponentState> {
         const reimsFromServer = await resp.json();
         this.setState({
             reims: reimsFromServer,
-            statusDropdown: {
-                ...this.state.statusDropdown,
+            usersDropdown: {
+                ...this.state.usersDropdown,
                 selection: 'All'
             }
         });
         console.log(reimsFromServer);
     }
 
-    getreimsByStatusId = async (status: Status) => {
-        const resp = await fetch(environment.context + '/reim/status/' + status.statusId, {
+    getreimsByUserId = async (users: User) => {
+        const resp = await fetch(environment.context + '/reim/author/userId/' + users.id, {
             credentials: 'include'
         });
         const reimsFromServer = await resp.json();
         this.setState({
             reims: reimsFromServer,
-            statusDropdown: {
-                ...this.state.statusDropdown,
-                selection: status.status
+            usersDropdown: {
+                ...this.state.usersDropdown,
+                selection: users.username
             }
         });
         console.log(reimsFromServer);
     }
 
 
-    getStatus = async () => {
-        const resp = await fetch(environment.context + '/status', {
+    getUsers = async () => {
+        const resp = await fetch(environment.context + '/users/reim/author', {
             credentials: 'include'
         });
-        const status = await resp.json();
+        const users = await resp.json();
         this.setState({
-            status
+            users
         });
     }
 
-    toggleStatusDropdown = () => {
+    toggleUsersDropdown = () => {
         this.setState({
-            statusDropdown: {
-                ...this.state.statusDropdown,
-                isOpen: !this.state.statusDropdown.isOpen
+            usersDropdown: {
+                ...this.state.usersDropdown,
+                isOpen: !this.state.usersDropdown.isOpen
             }
         });
     }
@@ -140,15 +139,21 @@ export class Reims extends Component<IProps, IComponentState> {
         })
     }
 
-    getUpdateOption = (reim: Reim) => {
-        if(this.props.currentUser) {
+    getAproveOption = (reim: Reim) => {
+        if (this.props.currentUser) {
             const pen = 'pending'
             if (!reim.resolver) {
                 return <td>
                     <Button color="success" onClick={() => this.approveReim(reim.reimId)}>Approved</Button>
                 </td>
             }
-            else if (reim.resolver.id === this.props.currentUser.id) {
+        }
+    }
+
+    getDeniedOption = (reim: Reim) => {
+        if (this.props.currentUser) {
+            const pen = 'pending'
+             if (!reim.resolver) {
                 return <td>
                     <Button color="danger" onClick={() => this.denyReim(reim.reimId)}>Denied</Button>
                 </td>
@@ -156,25 +161,37 @@ export class Reims extends Component<IProps, IComponentState> {
         }
     }
 
+    getReimsByCurentUserID = async () => {
+        let curent = this.props.currentUser && this.props.currentUser.id;
+        const resp = await fetch(environment.context + '/reim/author/userId/' + Number(curent), {
+            credentials: 'include'
+        });
+        const reimsFromServer = await resp.json();
+        this.setState({
+            reims: reimsFromServer
+        });
+        console.log(reimsFromServer);
+    }
+
     render() {
         const reims = this.state.reims;
         return (
             <div id="reim-table-container">
                 <ButtonDropdown id="reim-Status-dropdown"
-                    isOpen={this.state.statusDropdown.isOpen}
-                    toggle={this.toggleStatusDropdown}>
+                    isOpen={this.state.usersDropdown.isOpen}
+                    toggle={this.toggleUsersDropdown}>
 
                     <DropdownToggle caret>
-                        {this.state.statusDropdown.selection}
+                        {this.state.usersDropdown.selection}
                     </DropdownToggle>
                     <DropdownMenu right>
                         <DropdownItem onClick={this.getReims}>All</DropdownItem>
                         <DropdownItem divider />
                         {
-                            this.state.status.map(status => (
-                                <DropdownItem key={'Status-dropdown-' + status.statusId}
-                                    onClick={() => this.getreimsByStatusId(status)}>
-                                    {status.status}
+                            this.state.users.map(user => (
+                                <DropdownItem key={'Status-dropdown-' + user.id}
+                                    onClick={() => this.getreimsByUserId(user)}>
+                                    {user.username}
                                 </DropdownItem>
                             ))
                         }
@@ -207,11 +224,15 @@ export class Reims extends Component<IProps, IComponentState> {
                                     <td>{reim.resolver && reim.resolver.username}</td>
                                     <td>{reim.status}</td>
                                     <td>{reim.type}</td>
-                                    {this.getUpdateOption(reim)}
+                                    {this.getAproveOption(reim)}
+                                    {this.getDeniedOption(reim)}
                                 </tr>)
                         }
                     </tbody>
                 </table>
+                <li className="nav-item active">
+                    {this.props.currentUser && this.props.currentUser.id}
+                </li>
             </div>
         )
     }
@@ -221,4 +242,4 @@ const mapStateToProps = (state: IState) => ({
     currentUser: state.auth.currentUser
 })
 
-export default connect(mapStateToProps)(Reims);
+export default connect(mapStateToProps)(ReimsByCurentUser);

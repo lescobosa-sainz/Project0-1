@@ -17,7 +17,7 @@ interface IState {
     }
 }
 
-export default class Reims extends Component<{}, IState> {
+export default class ReimsByStatus extends Component<{}, IState> {
     constructor(props: any) {
         super(props);
         this.state = {

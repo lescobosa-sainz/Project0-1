@@ -12,11 +12,12 @@ interface IProps {
     currentUser?: User
 }
 
+
 interface IComponentState {
     reims: Reim[]
 }
 
-export class ReimsByStatus extends Component<IProps, IComponentState> {
+export class ReimsByCurent extends Component<IProps, IComponentState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -175,4 +176,4 @@ const mapStateToProps = (state: IState) => ({
     currentUser: state.auth.currentUser
 })
 
-export default connect(mapStateToProps)(ReimsByStatus);
+export default connect(mapStateToProps)(ReimsByCurent);

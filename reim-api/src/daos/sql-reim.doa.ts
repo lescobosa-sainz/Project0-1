@@ -1,6 +1,6 @@
 import { connectionPool } from '../util/connection.util';
 import { PoolClient } from 'pg';
-import { convertSqlReim } from '../util/reim.convert';
+import { convertSqlReim, convertSqlReimAll } from '../util/reim.convert';
 //import { convertSqlReim2 } from '../util/reim.convert';
 import Reim from '../models/reim';
 
@@ -17,10 +17,36 @@ export async function findAll() {
         inner join status using (status_id)
         inner join app_user w on (r.author = w.user_id)
         left join r_view v on (r.resolver = v.r_id)
+        Order by r.reimbursement_id
         `);
 
         // convert result from sql object to js object
         return result.rows.map(convertSqlReim);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        client && client.release();
+    }
+    console.log('found all');
+    return undefined;
+}
+
+export async function findAllReim() {
+    console.log('finding all reimbursements');
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect(); // basically .then is everything after this
+
+        const result = await client.query(`select * from reim r
+		inner join type using (type_id)
+        inner join status using (status_id)
+        inner join app_user w on (r.author = w.user_id)
+        left join r_view v on (r.resolver = v.r_id)
+        Order by r.reimbursement_id
+        `);
+
+        // convert result from sql object to js object
+        return result.rows.map(convertSqlReimAll);
     } catch (err) {
         console.log(err);
     } finally {
@@ -96,6 +122,50 @@ export async function findByReimStatusId(statusId: number) {
     return undefined;
 }
 
+
+export async function findByReimTypeId(typeId: number) {
+    console.log('finding status by type id: ' + typeId);
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect(); // basically .then is everything after this
+        console.log(typeId);
+        const result = await client.query(`Select * from reim r
+		inner join type using (type_id)
+        inner join status using (status_id)
+        inner join app_user w on (r.author = w.user_id)
+		 WHERE type_id = $1`, [typeId]);
+       
+         return result.rows.map(convertSqlReim);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        client && client.release();
+    }
+    return undefined;
+}
+
+
+export async function findByReimTypeIdInt(typeId: number) {
+    console.log('finding status by type id: ' + typeId);
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect(); // basically .then is everything after this
+        console.log(typeId);
+        const result = await client.query(`Select * from reim r
+		inner join type using (type_id)
+        inner join status using (status_id)
+        inner join app_user w on (r.author = w.user_id)
+		 WHERE type_id = $1`, [typeId]);
+       
+         return result.rows.map(convertSqlReimAll);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        client && client.release();
+    }
+    return undefined;
+}
+
 export async function save(reim: Reim) {
     let client: PoolClient;
     try {
@@ -120,7 +190,7 @@ export async function save(reim: Reim) {
 }
 
 export async function update(reim: Reim) {
-    const oldReim = await findById(reim.reimId);
+    const oldReim = await findByReimTypeId(reim.reimId);
     if (!oldReim) {
         return undefined;
     }
@@ -138,6 +208,37 @@ export async function update(reim: Reim) {
             RETURNING *
         `;
         const params = [reim.author, reim.amount, reim.dateSubmitted, reim.dateResolved, reim.description, reim.resolver, reim.status, reim.type, reim.reimId];
+        const result = await client.query(queryString, params);
+        const sqlReim = result.rows[0];
+        return convertSqlReim(sqlReim);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        client && client.release();
+    }
+    console.log('found all');
+    return undefined;
+}
+
+export async function updateStatus(reim: Reim) {
+    const oldReim = await findByReimTypeId(reim.reimId);
+    if (!oldReim) {
+        return undefined;
+    }
+    reim = {
+        ...oldReim,
+        ...reim
+    };
+    console.log(reim);
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect(); // basically .then is everything after this
+        const queryString = `
+            UPDATE reim SET  date_resolved = $1,  resolver = $2, status_id = $3
+            WHERE reimbursement_id = $4
+            RETURNING *
+        `;
+        const params = [reim.dateResolved, reim.resolver, reim.status, reim.reimId];
         const result = await client.query(queryString, params);
         const sqlReim = result.rows[0];
         return convertSqlReim(sqlReim);

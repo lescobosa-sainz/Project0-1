@@ -22,7 +22,7 @@ export const login = (credentials: any, history: any) => async (dispatch: any) =
             type: authTypes.UPDATE_CURRENT_USER,
             payload: user
         })
-        history.push('/reims'); // navigate pages
+        history.push('/home'); // navigate pages
     } catch (err) {
         console.log(err);
         console.log('invalid credentials');

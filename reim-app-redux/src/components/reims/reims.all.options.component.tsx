@@ -4,7 +4,6 @@ import User from '../../models/user';
 import { IState } from '../../reducers';
 import { connect } from 'react-redux';
 import Reim from '../../models/reim';
-
 import { Button } from 'reactstrap';
 
 
@@ -12,11 +11,12 @@ interface IProps {
     currentUser?: User
 }
 
+
 interface IComponentState {
     reims: Reim[]
 }
 
-export class ReimsByStatus extends Component<IProps, IComponentState> {
+export class ReimsAllOptions extends Component<IProps, IComponentState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -97,8 +97,6 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
         })
     }
 
-
-
     getAproveOption = (reim: Reim) => {
         let curent = this.props.currentUser && this.props.currentUser.roleID.id;
         if (curent === 1 || curent === 3) {
@@ -122,6 +120,8 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
             }
         }
     }
+
+    
 
     render() {
         const reims = this.state.reims;
@@ -175,4 +175,4 @@ const mapStateToProps = (state: IState) => ({
     currentUser: state.auth.currentUser
 })
 
-export default connect(mapStateToProps)(ReimsByStatus);
+export default connect(mapStateToProps)(ReimsAllOptions);

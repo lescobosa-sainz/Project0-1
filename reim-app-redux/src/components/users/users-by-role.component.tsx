@@ -1,30 +1,31 @@
 import React, { Component } from 'react'
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
 import { environment } from '../../environment';
+import User from '../../models/user';
 import { IState } from '../../reducers';
 import { connect } from 'react-redux';
+import Reim from '../../models/reim';
 import Role from '../../models/role';
-import User from '../../models/user';
 
-interface IProps {
+interface IProps { 
     currentUser?: User
 }
 
 interface IComponentState {
     users: User[],
-    role: Role[],
+    roles: Role[],
     roleDropdown: {
         isOpen: boolean,
         selection: string
     }
 }
 
-export class Users extends Component<IProps, IComponentState> {
+export class UsersByRole extends Component<IProps, IComponentState> {
     constructor(props: any) {
         super(props);
         this.state = {
             users: [],
-            role: [],
+            roles: [],
             roleDropdown: {
                 isOpen: false,
                 selection: 'All'
@@ -33,11 +34,11 @@ export class Users extends Component<IProps, IComponentState> {
     }
 
     async componentDidMount() {
-        this.getUser();
-        this.getRole();
+        this.getUsers();
+        this.getRoles();
     }
 
-    getUser = async () => {
+    getUsers = async () => {
         const resp = await fetch(environment.context + '/users', {
             credentials: 'include'
         });
@@ -68,13 +69,14 @@ export class Users extends Component<IProps, IComponentState> {
     }
 
 
-    getRole = async () => {
+
+    getRoles = async () => {
         const resp = await fetch(environment.context + '/role', {
             credentials: 'include'
         });
-        const role = await resp.json();
+        const roles = await resp.json();
         this.setState({
-            role
+            roles
         });
     }
 
@@ -87,7 +89,43 @@ export class Users extends Component<IProps, IComponentState> {
         });
     }
 
+    approveReim = async(UserId: number) => {
+        const result = await fetch(environment.context + '/reim', {
+            credentials: 'include',
+            method: 'PATCH',
+            body: JSON.stringify({
+                id: UserId,
+                status: null
+            }),
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
+        const updatedUser = await result.json();
+        this.setState({
+            ...this.state,
+            users: this.state.users.map(user => {
+                if(user.id === updatedUser.id) {
+                    return updatedUser;
+                } else {
+                    return user;
+                }
+            })
+        })
+    }
 
+
+
+    getUpdateOption = (reim: Reim) => {
+        if(this.props.currentUser) {
+            const pen = 'pending'
+            if (!reim.resolver) {
+                return <td>
+                    <Button color="success" onClick={() => this.approveReim(reim.reimId)}>Approved</Button>
+                </td>
+            }
+        }
+    }
 
     render() {
         const users = this.state.users;
@@ -101,10 +139,10 @@ export class Users extends Component<IProps, IComponentState> {
                         {this.state.roleDropdown.selection}
                     </DropdownToggle>
                     <DropdownMenu right>
-                        <DropdownItem onClick={this.getUser}>All</DropdownItem>
+                        <DropdownItem onClick={this.getUsers}>All</DropdownItem>
                         <DropdownItem divider />
                         {
-                            this.state.role.map(role => (
+                            this.state.roles.map(role => (
                                 <DropdownItem key={'Status-dropdown-' + role.id}
                                     onClick={() => this.getUsersByRoleId(role)}>
                                     {role.role}
@@ -116,9 +154,8 @@ export class Users extends Component<IProps, IComponentState> {
                 <table className="table table-striped table-dark">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
+                        <th scope="col">ID</th>
                             <th scope="col">User Name</th>
-                            <th scope="col">Password</th>
                             <th scope="col">Email</th>
                             <th scope="col">First Name</th>
                             <th scope="col">Last Name</th>
@@ -128,11 +165,10 @@ export class Users extends Component<IProps, IComponentState> {
                     </thead>
                     <tbody>
                         {
-                            users.map(user => 
+                             users.map(user =>
                                 <tr key={'id-' + user.id}>
                                     <td>{user.id}</td>
                                     <td>{user.username}</td>
-                                    <td>{user.password}</td>
                                     <td>{user.email}</td>
                                     <td>{user.firstName}</td>
                                     <td>{user.lastName}</td>
@@ -151,4 +187,4 @@ const mapStateToProps = (state: IState) => ({
     currentUser: state.auth.currentUser
 })
 
-export default connect(mapStateToProps)(Users);
+export default connect(mapStateToProps)(UsersByRole);

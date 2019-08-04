@@ -21,12 +21,35 @@ export async function findAll() {
     return undefined;
 }
 
+
+export async function findAllAuthors() {
+    console.log('finding all authors');
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect(); // basically .then is everything after this
+        const result = await client.query(`select  * 
+        from app_user
+        where user_id in (select distinct author
+        from reim r
+        order by author)`);
+        // convert result from sql object to js object
+        return result.rows.map(convertSqlUser);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        client && client.release(); 
+    }
+    console.log('found all');
+    return undefined;
+}
+
+
 export async function findById(id: number) {
     console.log('finding user by id: ' + id);
     let client: PoolClient;
     try {
         client = await connectionPool.connect(); // basically .then is everything after this
-        const result = await client.query('SELECT * FROM app_user WHERE user_id = $1', [id]);
+        const result = await client.query('SELECT * FROM app_user left join role using (role_id) WHERE user_id = $1', [id]);
         const sqlUser = result.rows[0];
         return sqlUser && convertSqlUser(sqlUser);
     } catch (err) {
@@ -37,6 +60,21 @@ export async function findById(id: number) {
     return undefined;
 }
 
+
+export async function findByRole(id: number) {
+    console.log('finding user by role: ' + id);
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect(); // basically .then is everything after this
+        const result = await client.query('SELECT * FROM app_user WHERE role_id = $1', [id]);
+        return result.rows.map(convertSqlUser);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        client && client.release();
+    }
+    return undefined;
+}
 
 export async function findByFirstName(firstName: string) {
     console.log('finding users by first name');

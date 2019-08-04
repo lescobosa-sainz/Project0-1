@@ -1,6 +1,6 @@
 export default class type {
     constructor(
-        typeId: number, // primary key
-        type: string, // not null, unique
+        public typeId: 0, // primary key
+        public type: '', // not null, unique
     ) { }
 }

@@ -37,6 +37,12 @@ usersRouter.get('/:id',[
     res.json(user);
 }]);
 
+usersRouter.get('/role/:id', async (req, res) => {
+    const user = await userDao.findByRole(+req.params.id);
+    res.json(user);
+});
+
+
 /**
  * /users/firstName/:firstName 
  */
@@ -44,6 +50,12 @@ usersRouter.get('/firstName/:firstName', async (req, res) => {
     const firstName = req.params.firstName;
     const users = await userDao.findByFirstName(firstName);
     res.json(users);
+});
+
+
+usersRouter.get('/reim/author', async (req, res) => {
+    const user = await userDao.findAllAuthors();
+    res.json(user);
 });
 
 /**

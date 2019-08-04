@@ -9,7 +9,10 @@ export function convertSqlReim(row) {
 }
 
 
-
+export function convertSqlReimAll(row) {
+  console.log('convert');
+   return new Reim(row.reimbursement_id, row.user_id, row.amount, row.date_submited, row.date_resolved, row.description, row.r_id, row.status_id, row.type_id);
+ }
 
 
 

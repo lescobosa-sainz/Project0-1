@@ -6,6 +6,7 @@ import { authRouter } from './routers/auth.router';
 import { reimRouter } from './routers/reim.router';
 import { statusRouter } from './routers/status.router';
 import { roleRouter } from './routers/role.router';
+import { typeRouter } from './routers/type.router';
 
 // specify the port will run on
 const port = process.env.PORT || 8012;
@@ -47,6 +48,7 @@ app.use('/users', usersRouter);
 app.use('/reim', reimRouter);
 app.use('/status', statusRouter);
 app.use('/role', roleRouter);
+app.use('/type', typeRouter);
 app.use(authRouter);
 
 app.listen(port, () => {
