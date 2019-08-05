@@ -89,13 +89,16 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
         });
     }
 
-    approveReim = async(ReimId: number) => {
+    approveReim = async (reim: Reim) => {
         const result = await fetch(environment.context + '/reim', {
             credentials: 'include',
             method: 'PATCH',
             body: JSON.stringify({
-                id: ReimId,
-                status: null
+                reimId: reim.reimId,
+                dateResolve: String(reim.dateResolved),
+                resolver: this.props.currentUser && this.props.currentUser.id,
+                status: 2
+
             }),
             headers: {
                 'content-type': 'application/json'
@@ -105,7 +108,7 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
         this.setState({
             ...this.state,
             reims: this.state.reims.map(reim => {
-                if(reim.reimId === updatedReim.id) {
+                if (reim.reimId === updatedReim.reimId) {
                     return updatedReim;
                 } else {
                     return reim;
@@ -114,15 +117,17 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
         })
     }
 
-   denyReim = async(ReimId: number) => {
+    denyReim = async (reim: Reim) => {
+        let curent = this.props.currentUser;
+
         const result = await fetch(environment.context + '/reim', {
             credentials: 'include',
             method: 'PATCH',
             body: JSON.stringify({
-                id: ReimId,
-                status: {
-                    id: this.props.currentUser && this.props.currentUser.id
-                }
+                reimId: reim.reimId,
+                dateResolve: String(reim.dateResolved),
+                resolver: this.props.currentUser && this.props.currentUser.id,
+                status: 2
             }),
             headers: {
                 'content-type': 'application/json'
@@ -132,7 +137,7 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
         this.setState({
             ...this.state,
             reims: this.state.reims.map(reim => {
-                if(reim.reimId === updatedReim.id) {
+                if (reim.reimId === updatedReim.id) {
                     return updatedReim;
                 } else {
                     return reim;
@@ -140,24 +145,28 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
             })
         })
     }
+
+
 
     getAproveOption = (reim: Reim) => {
-        if (this.props.currentUser) { 
-            const pen = 'pending'
-            if (!reim.resolver) {
+        let curent = this.props.currentUser && this.props.currentUser.roleID.id;
+        if (curent === 1 || curent === 3) {
+            const pen = 'pending';
+            if (String(reim.status) === pen) {
                 return <td>
-                    <Button color="success" onClick={() => this.approveReim(reim.reimId)}>Approved</Button>
+                    <Button color="success" onClick={() => this.approveReim(reim)}>Approve</Button>
                 </td>
             }
         }
     }
 
     getDeniedOption = (reim: Reim) => {
-        if (this.props.currentUser) {
-            const pen = 'pending'
-             if (!reim.resolver) {
+        let curent = this.props.currentUser && this.props.currentUser.roleID.id;
+        if (curent === 1 || curent === 3) {
+            const pen = 'pending';
+            if (String(reim.status) === pen) {
                 return <td>
-                    <Button color="danger" onClick={() => this.denyReim(reim.reimId)}>Denied</Button>
+                    <Button color="danger" onClick={() => this.denyReim(reim)}>Deny</Button>
                 </td>
             }
         }
@@ -190,7 +199,7 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
                 <table className="table table-striped table-dark">
                     <thead>
                         <tr>
-                        <th scope="col">ID</th>
+                            <th scope="col">ID</th>
                             <th scope="col">Author</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Date Submited</th>
@@ -203,7 +212,7 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
                     </thead>
                     <tbody>
                         {
-                             reims.map(reim =>
+                            reims.map(reim =>
                                 <tr key={'reimId-' + reim.reimId}>
                                     <td>{reim.reimId}</td>
                                     <td>{reim.author}</td>
@@ -220,9 +229,6 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
                         }
                     </tbody>
                 </table>
-                <li className="nav-item active">
-                    {this.props.currentUser && this.props.currentUser.id}
-                </li>
             </div>
         )
     }

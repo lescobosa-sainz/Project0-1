@@ -97,13 +97,11 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
         })
     }
 
-
-
     getAproveOption = (reim: Reim) => {
         let curent = this.props.currentUser && this.props.currentUser.roleID.id;
         if (curent === 1 || curent === 3) {
-            const app = 'approved';
-            if (String(reim.status) !== app) {
+            const pen = 'pending';
+            if (String(reim.status) === pen) {
                 return <td>
                     <Button color="success" onClick={() => this.approveReim(reim)}>Approve</Button>
                 </td>
@@ -114,8 +112,8 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
     getDeniedOption = (reim: Reim) => {
         let curent = this.props.currentUser && this.props.currentUser.roleID.id;
         if (curent === 1 || curent === 3) {
-            const den = 'denied';
-            if (String(reim.status) !== den) {
+            const pen = 'pending';
+            if (String(reim.status) === pen) {
                 return <td>
                     <Button color="danger" onClick={() => this.denyReim(reim)}>Deny</Button>
                 </td>

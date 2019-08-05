@@ -128,7 +128,7 @@ export class Users extends Component<IProps, IComponentState> {
                     </thead>
                     <tbody>
                         {
-                            users.map(user => 
+                            users.map(user =>
                                 <tr key={'id-' + user.id}>
                                     <td>{user.id}</td>
                                     <td>{user.username}</td>

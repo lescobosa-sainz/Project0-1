@@ -13,4 +13,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: 'reim-app-redux'
+  base-directory: 'reim-app-redux/build'

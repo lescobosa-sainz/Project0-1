@@ -5,9 +5,6 @@ import { IState } from '../../reducers';
 import { connect } from 'react-redux';
 import Reim from '../../models/reim';
 
-import { Button } from 'reactstrap';
-
-
 interface IProps {
     currentUser?: User
 }
@@ -31,7 +28,8 @@ export class ReimsByCurent extends Component<IProps, IComponentState> {
     }
 
     getReims = async () => {
-        const resp = await fetch(environment.context + '/reim', {
+        let curent = this.props.currentUser && this.props.currentUser.id;
+        const resp = await fetch(environment.context + '/reim/author/userId/' + curent, {
             credentials: 'include'
         });
         const reimsFromServer = await resp.json();
@@ -41,95 +39,13 @@ export class ReimsByCurent extends Component<IProps, IComponentState> {
         console.log(reimsFromServer);
     }
 
-    approveReim = async (reim: Reim) => {
-        const result = await fetch(environment.context + '/reim', {
-            credentials: 'include',
-            method: 'PATCH',
-            body: JSON.stringify({
-                reimId: reim.reimId,
-                dateResolve: String(reim.dateResolved),
-                resolver: this.props.currentUser && this.props.currentUser.id,
-                status: 2
+ 
 
-            }),
-            headers: {
-                'content-type': 'application/json'
-            }
-        })
-        const updatedReim = await result.json();
-        this.setState({
-            ...this.state,
-            reims: this.state.reims.map(reim => {
-                if (reim.reimId === updatedReim.reimId) {
-                    return updatedReim;
-                } else {
-                    return reim;
-                }
-            })
-        })
-    }
-
-    denyReim = async (reim: Reim) => {
-        let curent = this.props.currentUser;
-
-        const result = await fetch(environment.context + '/reim', {
-            credentials: 'include',
-            method: 'PATCH',
-            body: JSON.stringify({
-                reimId: reim.reimId,
-                dateResolve: String(reim.dateResolved),
-                resolver: this.props.currentUser && this.props.currentUser.id,
-                status: 2
-            }),
-            headers: {
-                'content-type': 'application/json'
-            }
-        })
-        const updatedReim = await result.json();
-        this.setState({
-            ...this.state,
-            reims: this.state.reims.map(reim => {
-                if (reim.reimId === updatedReim.id) {
-                    return updatedReim;
-                } else {
-                    return reim;
-                }
-            })
-        })
-    }
-
-
-
-    getAproveOption = (reim: Reim) => {
-        let curent = this.props.currentUser && this.props.currentUser.roleID.id;
-        if (curent === 1 || curent === 3) {
-            const app = 'approved';
-            if (String(reim.status) !== app) {
-                return <td>
-                    <Button color="success" onClick={() => this.approveReim(reim)}>Approve</Button>
-                </td>
-            }
-        }
-    }
-
-    getDeniedOption = (reim: Reim) => {
-        let curent = this.props.currentUser && this.props.currentUser.roleID.id;
-        if (curent === 1 || curent === 3) {
-            const den = 'denied';
-            if (String(reim.status) !== den) {
-                return <td>
-                    <Button color="danger" onClick={() => this.denyReim(reim)}>Deny</Button>
-                </td>
-            }
-        }
-    }
 
     render() {
         const reims = this.state.reims;
         return (
-
             <div id="reim-table-container">
-
                 <table className="table table-striped table-dark">
                     <thead>
                         <tr>
@@ -157,8 +73,6 @@ export class ReimsByCurent extends Component<IProps, IComponentState> {
                                     <td>{reim.resolver}</td>
                                     <td>{reim.status}</td>
                                     <td>{reim.type}</td>
-                                    {this.getAproveOption(reim)}
-                                    {this.getDeniedOption(reim)}
                                 </tr>)
                         }
                     </tbody>

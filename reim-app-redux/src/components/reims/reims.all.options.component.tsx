@@ -4,29 +4,49 @@ import User from '../../models/user';
 import { IState } from '../../reducers';
 import { connect } from 'react-redux';
 import Reim from '../../models/reim';
-import { Button } from 'reactstrap';
+import { Button, DropdownItem, DropdownMenu, DropdownToggle, ButtonDropdown } from 'reactstrap';
+import type from '../../models/type';
 
 
 interface IProps {
     currentUser?: User
 }
 
-
 interface IComponentState {
-    reims: Reim[]
+    reims: Reim[],
+    users: User[],
+    usersDropdown: {
+        isOpen: boolean,
+        selection: string
+    },
+    types: type[],
+    typesDropdown: {
+        isOpen: boolean,
+        selection: string
+    }
 }
-
 export class ReimsAllOptions extends Component<IProps, IComponentState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            reims: []
+            reims: [],
+            users: [],
+            usersDropdown: {
+                isOpen: false,
+                selection: 'All'
+            },
+            types: [],
+            typesDropdown: {
+                isOpen: false,
+                selection: 'All'
+            }
         };
     }
 
     async componentDidMount() {
         this.getReims();
-
+        this.getUsers();
+        this.gettypes();
     }
 
     getReims = async () => {
@@ -35,10 +55,90 @@ export class ReimsAllOptions extends Component<IProps, IComponentState> {
         });
         const reimsFromServer = await resp.json();
         this.setState({
-            reims: reimsFromServer
+            reims: reimsFromServer,
+            usersDropdown: {
+                ...this.state.usersDropdown,
+                selection: 'All'
+            },
+            typesDropdown: {
+                ...this.state.typesDropdown,
+                selection: 'All'
+            }
         });
         console.log(reimsFromServer);
     }
+
+    getreimsByUserId = async (users: User) => {
+        const resp = await fetch(environment.context + '/reim/author/userId/' + users.id, {
+            credentials: 'include'
+        });
+        const reimsFromServer = await resp.json();
+        this.setState({
+            reims: reimsFromServer,
+            usersDropdown: {
+                ...this.state.usersDropdown,
+                selection: users.username
+            }
+        });
+        console.log(reimsFromServer);
+    }
+
+
+    getUsers = async () => {
+        const resp = await fetch(environment.context + '/users/reim/author', {
+            credentials: 'include'
+        });
+        const users = await resp.json();
+        this.setState({
+            users
+        });
+    }
+
+    toggleUsersDropdown = () => {
+        this.setState({
+            usersDropdown: {
+                ...this.state.usersDropdown,
+                isOpen: !this.state.usersDropdown.isOpen
+            }
+        });
+    }
+
+    getreimsBytypesId = async (types: type) => {
+        const resp = await fetch(environment.context + '/reim/type/' + types.typeId, {
+            credentials: 'include'
+        });
+        const reimsFromServer = await resp.json();
+        this.setState({
+            reims: reimsFromServer,
+            typesDropdown: {
+                ...this.state.typesDropdown,
+                selection: types.type
+            }
+        });
+        console.log(reimsFromServer);
+    }
+
+
+    gettypes = async () => {
+        const resp = await fetch(environment.context + '/type', {
+            credentials: 'include'
+        });
+        const types = await resp.json();
+        this.setState({
+            types
+        });
+    }
+
+    toggletypesDropdown = () => {
+        this.setState({
+            typesDropdown: {
+                ...this.state.typesDropdown,
+                isOpen: !this.state.typesDropdown.isOpen
+            }
+        });
+    }
+
+
 
     approveReim = async (reim: Reim) => {
         const result = await fetch(environment.context + '/reim', {
@@ -97,11 +197,13 @@ export class ReimsAllOptions extends Component<IProps, IComponentState> {
         })
     }
 
+
+
     getAproveOption = (reim: Reim) => {
         let curent = this.props.currentUser && this.props.currentUser.roleID.id;
         if (curent === 1 || curent === 3) {
-            const app = 'approved';
-            if (String(reim.status) !== app) {
+            const pen = 'pending';
+            if (String(reim.status) === pen) {
                 return <td>
                     <Button color="success" onClick={() => this.approveReim(reim)}>Approve</Button>
                 </td>
@@ -112,8 +214,8 @@ export class ReimsAllOptions extends Component<IProps, IComponentState> {
     getDeniedOption = (reim: Reim) => {
         let curent = this.props.currentUser && this.props.currentUser.roleID.id;
         if (curent === 1 || curent === 3) {
-            const den = 'denied';
-            if (String(reim.status) !== den) {
+            const pen = 'pending';
+            if (String(reim.status) === pen) {
                 return <td>
                     <Button color="danger" onClick={() => this.denyReim(reim)}>Deny</Button>
                 </td>
@@ -121,13 +223,59 @@ export class ReimsAllOptions extends Component<IProps, IComponentState> {
         }
     }
 
-    
-
     render() {
         const reims = this.state.reims;
         return (
-
             <div id="reim-table-container">
+
+
+                <ButtonDropdown id="reim-Status-dropdown"
+                    isOpen={this.state.typesDropdown.isOpen}
+                    toggle={this.toggletypesDropdown}>
+
+                    <DropdownToggle caret>
+                        {this.state.typesDropdown.selection}
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                        <DropdownItem onClick={this.getReims}>All Status</DropdownItem>
+                        <DropdownItem divider />
+                        {
+                            this.state.types.map(types => (
+                                <DropdownItem key={'Status-dropdown-' + types.typeId}
+                                    onClick={() => this.getreimsBytypesId(types)}>
+                                    {types.type}
+                                </DropdownItem>
+                            ))
+                        }
+                    </DropdownMenu>
+
+                </ButtonDropdown>
+
+
+
+                <ButtonDropdown id="reim-Status-dropdown"
+                    isOpen={this.state.usersDropdown.isOpen}
+                    toggle={this.toggleUsersDropdown}>
+
+                    <DropdownToggle caret>
+                        {this.state.usersDropdown.selection}
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                        <DropdownItem onClick={this.getReims}>All Authors</DropdownItem>
+                        <DropdownItem divider />
+                        {
+                            this.state.users.map(user => (
+                                <DropdownItem key={'Status-dropdown-' + user.id}
+                                    onClick={() => this.getreimsByUserId(user)}>
+                                    {user.username}
+                                </DropdownItem>
+                            ))
+                        }
+                    </DropdownMenu>
+                </ButtonDropdown>
+
+
+
 
                 <table className="table table-striped table-dark">
                     <thead>
@@ -153,7 +301,7 @@ export class ReimsAllOptions extends Component<IProps, IComponentState> {
                                     <td>{reim.dateSubmitted}</td>
                                     <td>{reim.dateResolved}</td>
                                     <td>{reim.description}</td>
-                                    <td>{reim.resolver}</td>
+                                    <td>{reim.resolver && reim.resolver.username}</td>
                                     <td>{reim.status}</td>
                                     <td>{reim.type}</td>
                                     {this.getAproveOption(reim)}
@@ -162,11 +310,7 @@ export class ReimsAllOptions extends Component<IProps, IComponentState> {
                         }
                     </tbody>
                 </table>
-                <li className="nav-item active">
-                    {this.props.currentUser && this.props.currentUser.id}
-                </li>
             </div>
-
         )
     }
 }
