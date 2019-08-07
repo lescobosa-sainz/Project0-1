@@ -1,13 +1,18 @@
-import React from 'react';
+
 import { Button, Input } from 'reactstrap';
-import { environment } from '../../environment';
 import type from '../../models/type';
+import React, { Component } from 'react'
+import { environment } from '../../environment';
 import User from '../../models/user';
+import { IState } from '../../reducers';
+import { connect } from 'react-redux';
 
 
+interface IProps {
+    currentUser?: User
+}
 
-
-interface IState {
+interface IComponentState {
 
     users: User[],
     usersDropdown: {
@@ -29,7 +34,7 @@ interface IState {
     successMessage?: string
 }
 
-export default class SubmitReim2 extends React.Component<{}, IState> {
+export  class SubmitReimUser extends Component<IProps, IComponentState> {
 
     constructor(props: any) {
         super(props);
@@ -58,6 +63,7 @@ export default class SubmitReim2 extends React.Component<{}, IState> {
     async componentDidMount() {
         this.getUsers();
         this.gettypes();
+        
     }
 
     gettypes = async () => {
@@ -133,18 +139,21 @@ export default class SubmitReim2 extends React.Component<{}, IState> {
     }
 
     submit = async (event: React.FormEvent<HTMLFormElement>) => {
+    
         const body = {
-            author: this.state.reims.author,
-            amount: this.state.reims.amount,
-            dateSubmitted: "2019-07-20T16:00:00.000Z",
-            description: this.state.reims.description,
-            status: "pending",
-            type: this.state.reims.type
+            "author": this.state.reims.author,
+        "amount": this.state.reims.amount,
+        "dateSubmitted": "2019-07-20T16:00:00.000Z",
+        "description": this.state.reims.description,
+        "status": "1",
+        "type": this.state.reims.type
         }
         event.preventDefault();
-        try {
-            console.log('reim being submitted ' + this.state.reims.author)
-            const resp = await fetch('/reim', {
+         try {
+
+
+            console.log('sjsj');
+            const result = await fetch(environment.context +'/reim', {
                 method: 'POST',
                 credentials: 'include',
                 body: JSON.stringify(body),
@@ -152,23 +161,65 @@ export default class SubmitReim2 extends React.Component<{}, IState> {
                     'content-type': 'application/json'
                 }
             });
-
-            const reimbursement = await resp.json();
+            console.log('sj');
+            const reimbursement = await result.json();
             this.setState({
                 ...this.state,
-                successMessage: `Reimbursement ID ${reimbursement.reimbursementId} created!`
+                //successMessage: `Reimbursement ID created!`
+                 successMessage: `Reimbursement requested!`
             })
+            console.log('sjswerj');
+        } catch (err) {
+            console.log(err);
+            console.log('Reimbursement submition error');
+            this.setState({
+                errorMessage: 'Reimbursement submission error'
+
+
+            });
+        }
+
+      
+    }
+
+
+    async edit() {
+
+      
+        const body = {
+            "id": 38,
+        "username": "bend",
+        "password": "",
+        "email": "bend@hotmail",
+        "firstName": "bender",
+        "lastName": "rodriguez",
+        "phone": "123",
+        "roleID": 5
+        }
+
+       
+        try {
+            console.log('body: ' + body);
+            const resp = await fetch(environment.context +'/users', {
+                method: 'PATCH',
+                credentials: 'include',
+                body: JSON.stringify(body),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            });
+
+            const user = await resp.json();
+
+            console.log(user);
+
+            localStorage.setItem('user', JSON.stringify(user));
 
         } catch (err) {
             console.log(err);
-            let id =  this.state.reims.author;
-            let am =  this.state.reims.amount;
-            let des =  this.state.reims.description;
-            let ty =  this.state.reims.type;
-            console.log('Reimbursement submition error' + id+am+des+ty);
+            console.log('Error updating');
             this.setState({
-                errorMessage: 'Reimbursement submission error' + id+am+des+ty
-
+                errorMessage: 'Error updating'
 
             });
         }
@@ -205,3 +256,9 @@ export default class SubmitReim2 extends React.Component<{}, IState> {
         );
     }
 }
+
+const mapStateToProps = (state: IState) => ({
+    currentUser: state.auth.currentUser
+})
+
+export default connect(mapStateToProps)(SubmitReimUser);

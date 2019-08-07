@@ -13,10 +13,13 @@ import { Home } from './components/home/home.component';
 import UsersByRole from './components/users/users-by-role.component';
 import ReimsByType from './components/reims/reims-by-type.component';
 import ReimsByCurent from './components/reims/reims.curent.component';
-import SubmitReim  from './components/reims/submit.reim.component';
-import  EditUser  from './components/users/edit.user.component';
 import { Users } from './components/users/users.component';
-import SubmitReim2 from './components/reims/submit.reim.2component';
+import  EditUser  from './components/users/edit.user.component';
+import  SubmitReimDoctor  from './components/reims/submit.reim.doctor.component';
+import  SubmitReimUser  from './components/reims/submit.reim.curent.component copy';
+
+
+
 
 const App: React.FC = () => {
   return (
@@ -37,7 +40,8 @@ const App: React.FC = () => {
             <Route path="/reims-status" component={ReimsByStatus} />
             <Route path="/reims-type" component={ReimsByType} />
             <Route path="/reims-curent-user" component={ReimsByCurent} />
-            <Route path="/submit-reim" component={SubmitReim2} />
+            <Route path="/submit-reim-doctor" component={SubmitReimDoctor} />
+            <Route path="/submit-reim-user" component={SubmitReimUser} />
             <Route component={NotFound} />
           </Switch>
         </div>

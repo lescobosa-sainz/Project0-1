@@ -178,7 +178,7 @@ export class ReimsAllOptions extends Component<IProps, IComponentState> {
                 reimId: reim.reimId,
                 dateResolve: String(reim.dateResolved),
                 resolver: this.props.currentUser && this.props.currentUser.id,
-                status: 2
+                status: 3
             }),
             headers: {
                 'content-type': 'application/json'

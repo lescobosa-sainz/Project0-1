@@ -17,7 +17,8 @@ interface IComponentState {
     statusDropdown: {
         isOpen: boolean,
         selection: string
-    }
+    },
+    successMessage?: string
 }
 
 export class ReimsByStatus extends Component<IProps, IComponentState> {
@@ -36,6 +37,7 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
     async componentDidMount() {
         this.getReims();
         this.getStatus();
+       
     }
 
     getReims = async () => {
@@ -124,10 +126,10 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
             credentials: 'include',
             method: 'PATCH',
             body: JSON.stringify({
-                reimId: reim.reimId,
+                reimId: reim.reimId, 
                 dateResolve: String(reim.dateResolved),
                 resolver: this.props.currentUser && this.props.currentUser.id,
-                status: 2
+                status: 3
             }),
             headers: {
                 'content-type': 'application/json'
@@ -171,6 +173,8 @@ export class ReimsByStatus extends Component<IProps, IComponentState> {
             }
         }
     }
+
+  
 
     render() {
         const reims = this.state.reims;

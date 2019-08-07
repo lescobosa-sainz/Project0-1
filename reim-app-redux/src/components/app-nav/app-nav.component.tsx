@@ -13,7 +13,7 @@ export class NavComponent extends React.Component<INavProps> {
 
   getReimAdminOption = () => {
     let curent = this.props.user && this.props.user.roleID.id;
-    if (curent === 1 || curent === 3) {
+    if (curent === 1 || curent === 3 || curent ===2) {
       return (
         <li className="nav-item active dropdown">
           <div className="nav-link dropdown-toggle pointer" id="examples-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Reimbursements</div>
@@ -23,7 +23,8 @@ export class NavComponent extends React.Component<INavProps> {
             <div className="dropdown-item"><Link to="/reims-author" className="unset-anchor nav-link active">Reimbursements by Author</Link></div>
             <div className="dropdown-item"><Link to="/reims-type" className="unset-anchor nav-link active">Reimbursements by Type</Link></div>
             <div className="dropdown-item"><Link to="/reims-curent-user" className="unset-anchor nav-link active">Your Reimbursements</Link></div>
-            <div className="dropdown-item"><Link to="/submit-reim" className="unset-anchor nav-link active">Submit Reimbursements</Link></div>
+            <div className="dropdown-item"><Link to="/submit-reim-doctor" className="unset-anchor nav-link active">Submit Reimbursements for Patient</Link></div>
+            <div className="dropdown-item"><Link to="/submit-reim-user" className="unset-anchor nav-link active">Submit User Reimbursements</Link></div>
           </div>
         </li>
       )
@@ -35,7 +36,7 @@ export class NavComponent extends React.Component<INavProps> {
           <div className="nav-link dropdown-toggle pointer" id="examples-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Reimbursements</div>
           <div className="dropdown-menu" aria-labelledby="examples-dropdown">
             <div className="dropdown-item"><Link to="/reims-curent-user" className="unset-anchor nav-link active">Your Reimbursements</Link></div>
-            <div className="dropdown-item"><Link to="/submit-reim" className="unset-anchor nav-link active">Submit Reimbursements</Link></div>
+            <div className="dropdown-item"><Link to="/submit-reim-user" className="unset-anchor nav-link active">Submit User Reimbursements</Link></div>
           </div>
         </li>
       )
