@@ -1,6 +1,6 @@
 import { connectionPool } from '../util/connection.util';
 import { PoolClient } from 'pg';
-import { convertSqlUser } from '../util/user.converter';
+import { convertSqlUser, convertSqlUser2 } from '../util/user.converter';
 import User from '../models/user';
  
 
@@ -135,27 +135,27 @@ export async function save(user: User) {
 }
 
 export async function update(user: User) {
-    const oldUser = await findById(user.id);
-    if (!oldUser) {
-        return undefined;
-    }
-    user = {
-        ...oldUser,
-        ...user
-    };
+    // const oldUser = await findById(user.id);
+    // if (!oldUser) {
+    //     return undefined;
+    // }
+    // user = {
+    //     ...oldUser,
+    //     ...user
+    // };
     console.log(user);
     let client: PoolClient;
     try {
         client = await connectionPool.connect(); // basically .then is everything after this
         const queryString = `
-            UPDATE app_user SET username = $1, pass = $2, first_name = $3, last_name = $4, phone = $5, email = $6, role_id = $7
-            WHERE user_id = $8
+            UPDATE app_user SET username = $1, pass = $2, first_name = $3, last_name = $4, phone = $5, email = $6
+            WHERE user_id = $7
             RETURNING *
         `;
-        const params = [user.username, user.password, user.firstName, user.lastName, user.phone, user.email, user.roleID, user.id];
+        const params = [user.username, user.password, user.firstName, user.lastName, user.phone, user.email,  user.id];
         const result = await client.query(queryString, params);
         const sqlUser = result.rows[0];
-        return convertSqlUser(sqlUser);
+        return convertSqlUser2(sqlUser);
     } catch (err) {
         console.log(err);
     } finally {

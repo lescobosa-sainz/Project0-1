@@ -5,6 +5,9 @@ export function convertSqlUser(row: any) {
     return new User(row.user_id, row.username, '', row.email, row.first_name, row.last_name, row.phone, new Role (row.role_id, row.role_name));
 } 
 
+export function convertSqlUser2(row: any) {
+    return new User(row.user_id, row.username, 'pass', row.email, row.first_name, row.last_name, row.phone, row.role_id);
+} 
 
 // export function convertSqlUser(row: any) {
 //     console.log("convert");

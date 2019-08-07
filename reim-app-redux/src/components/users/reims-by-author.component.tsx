@@ -1,10 +1,13 @@
-
 import React, { Component } from 'react'
 import { environment } from '../../environment';
 import User from '../../models/user';
 import { IState } from '../../reducers';
 import { connect } from 'react-redux';
+import Reim from '../../models/reim';
 
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
+import type from '../../models/type';
+import { types } from '@babel/core';
 
 interface IProps {
     currentUser?: User
@@ -22,7 +25,7 @@ interface IComponentState {
     errorMessage?: string
 }
 
-export class EditUser extends Component<IProps, IComponentState> {
+export class ReimsByAuthor4 extends Component<IProps, IComponentState> {
 
     constructor(props: any) {
         super(props);
@@ -58,22 +61,32 @@ export class EditUser extends Component<IProps, IComponentState> {
         let curent = 38;
 
         // const body = {
-        //     "id": 6,
+        //     "id": "6",
+        //     "username": "rach",
+          
+        // }
+
+
+        // const body = {
+        //     "id": curent ,  
         //     "username": this.state.users.username,
-        //     "email": this.state.users.email,
         //     "firstName": this.state.users.firstName,
         //     "lastName": this.state.users.lastName,
-        //     "phone": this.state.users.phone
+        //    "email": this.state.users.email,   
+        //     "phone": this.state.users.phone 
         // }
 
         const body = {
-            "id": curent ,  
-            "username": this.state.users.username,
-            "firstName": this.state.users.firstName,
-            "lastName": this.state.users.lastName,
-           "email": this.state.users.email,   
-            "phone": this.state.users.phone 
+            "id": 38,
+            "username": "bend",
+        "password": "pass",
+            "email": "bend@hotmail",
+            "firstName": "bender",
+            "lastName": "rodriguez",
+            "phone": "12345"
+           
         }
+
         // const body = {
         //     "id": curent,  
         //     "username": String(this.state.users.username)
@@ -121,8 +134,7 @@ export class EditUser extends Component<IProps, IComponentState> {
             "email": "bend@hotmail",
             "firstName": "bender",
             "lastName": "rodriguez",
-            "phone": "1234",
-           
+            "phone": "1234"
         }
 
 
@@ -213,4 +225,4 @@ const mapStateToProps = (state: IState) => ({
     currentUser: state.auth.currentUser
 })
 
-export default connect(mapStateToProps)(EditUser);
+export default connect(mapStateToProps)(ReimsByAuthor4);

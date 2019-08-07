@@ -82,8 +82,7 @@ usersRouter.post('', async (req, res) => {
  * /users
  * partially update user resource
  */
-usersRouter.patch('', [
-    authMiddleware(1,2, 3),async (req, res) => {
+usersRouter.patch('', async (req, res) => {
     // const userId = req.body.id;
     // const currentLoggedInUser = req.session.user;
     // if (currentLoggedInUser && currentLoggedInUser.id === userId) {
@@ -92,7 +91,7 @@ usersRouter.patch('', [
     // } else {
     //     res.sendStatus(403);
     // }
-}]);
+});
 
 /**
  * /users
