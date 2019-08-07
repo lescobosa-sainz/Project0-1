@@ -68,8 +68,6 @@ export class UsersByRole extends Component<IProps, IComponentState> {
         console.log(usersFromServer);
     }
 
-
-
     getRoles = async () => {
         const resp = await fetch(environment.context + '/role', {
             credentials: 'include'

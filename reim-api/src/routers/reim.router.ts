@@ -51,6 +51,7 @@ reimRouter.get('/type/:typeId', async (req, res) => {
  */
 reimRouter.post('', async (req, res) => {
     const reim = req.body;
+    console.log("hi");
     if (!reim) {
         res.sendStatus(400);
     } else {

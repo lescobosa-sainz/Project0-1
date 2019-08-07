@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { IState } from '../../reducers';
 import { environment } from '../../environment';
 import User from '../../models/user';
-import Role from '../../models/role';
+import Reim from '../../models/reim';
+import type from '../../models/type';
 
 
 interface IProps { 
@@ -12,8 +13,9 @@ interface IProps {
 
 interface IComponentState {
     users: User[],
-    roles: Role[],
-    roleDropdown: {
+    reims: Reim[],
+    types: type[],
+    typesDropdown: {
         isOpen: boolean,
         selection: string
     }
@@ -21,26 +23,37 @@ interface IComponentState {
 
 
 export class SubmitReim extends Component<IProps, IComponentState> {
-
-
-
-    getUsersByRoleId = async (role: Role) => {
-        const resp = await fetch(environment.context + '/users/role/' + role.id, {
-            credentials: 'include'
-        });
-        const usersFromServer = await resp.json();
-        this.setState({
-            users: usersFromServer,
-            roleDropdown: {
-                ...this.state.roleDropdown,
-                selection: role.role
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            users:[],
+            reims: [],
+            types: [],
+            typesDropdown: {
+                isOpen: false,
+                selection: 'All'
             }
-        });
-        console.log(usersFromServer);
+        };
     }
 
+    gettypes = async () => {
+        const resp = await fetch(environment.context + '/type', {
+            credentials: 'include'
+        });
+        const types = await resp.json();
+        this.setState({
+            types
+        });
+    }
 
-
+    toggletypesDropdown = () => {
+        this.setState({
+            typesDropdown: {
+                ...this.state.typesDropdown,
+                isOpen: !this.state.typesDropdown.isOpen
+            }
+        });
+    }
 
     render() {
         return (
@@ -67,7 +80,7 @@ export class SubmitReim extends Component<IProps, IComponentState> {
         </form>
         );
     }
-}
+} 
 
 const mapStateToProps = (state: IState) => ({
     currentUser: state.auth.currentUser

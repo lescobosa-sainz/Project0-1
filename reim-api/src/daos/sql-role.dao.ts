@@ -2,19 +2,12 @@ import { connectionPool } from '../util/connection.util';
 import { PoolClient } from 'pg';
 import Role from '../models/role';
 
-
-
-
-
 export async function findAll() {
     console.log('finding all Role');
     let client: PoolClient;
     try {
         client = await connectionPool.connect(); // basically .then is everything after this
         const result = await client.query('SELECT * FROM role');
-        // convert result from sql object to js object
-        //console.log(result.rows.map(sqlRole=> new Role(sqlRole.RoleId, sqlRole.Role)));
-        //console.log(result.rows.map(sqlRole=> new Role(sqlRole.RoleId, sqlRole.RoleName)));
 
         return result.rows.map(sqlRole=> new Role(sqlRole.role_id, sqlRole.role_name));
         // return result.rows.map(convertSqlRole);
