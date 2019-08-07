@@ -77,9 +77,6 @@ export class ReimsByCurent extends Component<IProps, IComponentState> {
                         }
                     </tbody>
                 </table>
-                <li className="nav-item active">
-                    {this.props.currentUser && this.props.currentUser.id}
-                </li>
             </div>
 
         )

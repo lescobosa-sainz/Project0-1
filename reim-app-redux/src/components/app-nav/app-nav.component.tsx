@@ -80,7 +80,7 @@ export class NavComponent extends React.Component<INavProps> {
             <img className="img-adjust-position rev-logo" src={RevLogo} alt="revature" />
           </Link>
           <div className="nav-item active">
-            {this.props.user && this.props.user.roleID.role}:{this.props.user && this.props.user.id}
+            User:{this.props.user && this.props.user.username}
           </div>
         </div>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,9 +101,6 @@ export class NavComponent extends React.Component<INavProps> {
                 <Link to="/sign-in" className="unset-anchor nav-link">Sign In</Link>
                 <Link to="/sign-in" className="unset-anchor nav-link">Sign Out</Link>
               </div>
-            </li>
-            <li className="nav-item active">
-              {this.props.user && this.props.user.roleID.role}:{this.props.user && this.props.user.username}
             </li>
           </ul>
         </div>
